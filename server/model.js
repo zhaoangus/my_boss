@@ -38,7 +38,7 @@ const models = {
     'company': {
       type: String
     },
-    'money': {
+    'salary': {
       type: String
     }
   },

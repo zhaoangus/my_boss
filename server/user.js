@@ -10,9 +10,32 @@ const router = new Router({
 const _filter = {'pwd': 0, '_v': 0}
 
 router.get('/list', async ctx => {
-  const res = await User.find({})
-  ctx.body = {
-    res
+  const type = ctx.request.query.type
+  const res = await User.find({type})
+  if (res) {
+    ctx.body = {
+      code: 0,
+      res
+    }
+  }
+})
+
+router.post('/update', async ctx => {
+  const userid = ctx.cookies.get('userid')
+  if (userid) {
+    const find = await User.findByIdAndUpdate(userid, ctx.request.body)
+    const res = Object.assign({}, {
+      user: find.user,
+      type: find.type
+    }, ctx.request.body)
+    ctx.body = {
+      code: 0,
+      res
+    }
+  } else {
+    ctx.body = {
+      code: 1
+    }
   }
 })
 
@@ -42,10 +65,16 @@ router.post('/register', async ctx => {
       msg: '用户名重复'
     }
   } else {
-    const create = await User.create({user, pwd: md5Pwd(pwd), type})
-    if (create) {
+    const userModel = new User({user, pwd: md5Pwd(pwd), type})
+    const save = await userModel.save()
+    if (save) {
+      const { user, type, _id } = save
+      ctx.cookies.set('userid', _id)
       ctx.body = {
-        code: 0
+        code: 0,
+        data: {
+          user, type, _id
+        }
       }
     } else {
       ctx.body = {

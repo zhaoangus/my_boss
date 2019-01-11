@@ -1,25 +1,23 @@
 import axios from 'axios'
 import { getRedirectPath } from '../util'
 
-const REGISTER_SUCCESS = 'REGISTER_SUCCESS'
-const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+const AUTH_SUCCESS = 'AUTH_SUCCESS'
 const ERROR_MSG = 'ERROR_MSG'
+const LOAD_DATA = 'LOAD_DATA'
 
 const initState = {
   redirectTo: '',
-  isAuth: '',
   msg: '',
   user: '',
-  pwd: '',
   type: ''
 }
 // reducer
 export function user (state=initState, action) {
   switch (action.type) {
-    case REGISTER_SUCCESS:
-      return {...state, msg: '', redirectTo: getRedirectPath(action.payload), isAuth: true, ...action.pyload}
-    case LOGIN_SUCCESS:
-      return {...state, msg: '', redirectTo: getRedirectPath(action.payload), isAuth: true, ...action.pyload}
+    case AUTH_SUCCESS:
+      return {...state, msg: '', redirectTo: getRedirectPath(action.payload), ...action.pyload}
+    case LOAD_DATA:
+      return {...state, ...action.payload}
     case ERROR_MSG:
       return {...state, msg: action.msg, isAuth: false, }
     default:
@@ -31,12 +29,26 @@ function errorMsg (msg) {
   return { msg, type: ERROR_MSG }
 }
 
-function registerSuccess (data) {
-  return { payload: data, type: REGISTER_SUCCESS }
+function authSuccess (obj) {
+  const { pwd, ...data } = obj
+  return { payload: data, type: AUTH_SUCCESS }
 }
 
-function loginSuccess (data) {
-  return { type: LOGIN_SUCCESS, payload: data }
+export function loadData (userinfo) {
+  return { type: LOAD_DATA, payload: userinfo }
+}
+
+export function update (data) {
+  return dispatch => {
+    axios.post('/user/update', data)
+      .then(res => {
+        if (res.status === 200 && parseInt(res.data.code) === 0) {
+          dispatch(authSuccess(res.data.res))
+        } else {
+          dispatch(errorMsg(res.data.msg))
+        }
+      })
+  }
 }
 
 export function login ({user, pwd}) {
@@ -49,8 +61,7 @@ export function login ({user, pwd}) {
       pwd
     }).then((res) => {
       if (res.status === 200 && parseInt(res.data.code) === 0) {
-        // dispatch(registerSuccess({user, pwd}))
-        dispatch(loginSuccess(res.data.res))
+        dispatch(authSuccess(res.data.res))
       } else {
         dispatch(errorMsg(res.data.msg))
       }
@@ -72,7 +83,7 @@ export function register ({user, pwd, repeatPwd, type}) {
       type
     }).then((res) => {
       if (res.status === 200 && parseInt(res.data.code) === 0) {
-        dispatch(registerSuccess({user, pwd, type}))
+        dispatch(authSuccess({user, pwd, type}))
       } else {
         dispatch(errorMsg(res.data.msg))
       }
