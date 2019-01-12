@@ -47,7 +47,10 @@ router.post('/login', async ctx => {
       code: 0,
       res
     }
-    ctx.cookies.set('userid', res._id)
+    ctx.cookies.set('userid', res._id, {
+      maxAge:1000 * 60 * 60,
+      httpOnly: false
+    })
   } else {
     ctx.body = {
       code: 1,
@@ -69,7 +72,10 @@ router.post('/register', async ctx => {
     const save = await userModel.save()
     if (save) {
       const { user, type, _id } = save
-      ctx.cookies.set('userid', _id)
+      ctx.cookies.set('userid', _id, {
+        maxAge:1000 * 60 * 60,
+        httpOnly: false
+      })
       ctx.body = {
         code: 0,
         data: {

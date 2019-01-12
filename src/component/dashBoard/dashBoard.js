@@ -5,13 +5,10 @@ import { Switch, Route } from 'react-router-dom'
 import NavLinkBar from '../navLink/navLink'
 import Boss from '../../component/boss/boss'
 import Candidate from '../../component/candidate/candidate'
+import User from '../../component/user/user'
 
 function Msg () {
   return <h2>消息列表</h2>
-}
-
-function User () {
-  return <h2>个人中心</h2>
 }
 
 @connect (

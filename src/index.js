@@ -14,6 +14,7 @@ import AuthRoute from './component/authRoute/authRoute'
 import BossInfo from './container/bossInfo/bossInfo'
 import CandidateInfo from './container/candidateInfo/candidateInfo'
 import DashBoard from './component/dashBoard/dashBoard'
+import Chat from './component/chat/chat'
 import './index.css'
 
 const store = createStore(
@@ -37,6 +38,7 @@ ReactDOM.render(
           <Route path='/candidateinfo' component={CandidateInfo}></Route>
           <Route path='/login' component={Login}></Route>
           <Route path='/register' component={Register}></Route>
+          <Route path='/chat/:user' component={Chat}></Route>
           <Route component={DashBoard}></Route>
         </Switch>
       </div>
