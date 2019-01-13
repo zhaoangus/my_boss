@@ -44,6 +44,23 @@ router.get('/getmsglist', async ctx => {
   }
 })
 
+router.post('/readmsg', async ctx => {
+  const userid = ctx.cookies.get('userid')
+  const {from} = ctx.request.body
+  const update = await Chat.update({from, to: userid}, {'$set': {read: true}}, {'multi': true})
+  if (update) {
+    ctx.body = {
+      code: 0,
+      num: update.nModified
+    }
+  } else {
+    ctx.body = {
+      code: 1,
+      msg: '修改失败'
+    }
+  }
+})
+
 router.post('/update', async ctx => {
   const userid = ctx.cookies.get('userid')
   if (userid) {
