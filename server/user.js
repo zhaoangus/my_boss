@@ -4,6 +4,7 @@ const utils = require('utility')
 const model = require('./model')
 
 const User = model.getModel('user')
+const Chat = model.getModel('chat')
 const router = new Router({
   prefix: '/user'
 })
@@ -16,6 +17,18 @@ router.get('/list', async ctx => {
     ctx.body = {
       code: 0,
       res
+    }
+  }
+})
+
+router.get('/getmsglist', async ctx => {
+  const user = ctx.cookies.get('userid')
+  // {'$or': [{from: user, to: user}]}
+  const chat = await Chat.find({})
+  if (chat) {
+    ctx.body = {
+      code: 0,
+      msgs: chat
     }
   }
 })

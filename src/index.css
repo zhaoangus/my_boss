@@ -28,7 +28,7 @@
 
 .sticky-footer {
 	z-index: 10;
-	position: fixed;
+	position: absolute;
 	width: 100%;
 	bottom: 0;
 }
