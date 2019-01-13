@@ -23,12 +23,23 @@ router.get('/list', async ctx => {
 
 router.get('/getmsglist', async ctx => {
   const user = ctx.cookies.get('userid')
-  // {'$or': [{from: user, to: user}]}
-  const chat = await Chat.find({})
-  if (chat) {
-    ctx.body = {
-      code: 0,
-      msgs: chat
+  const userdoc = await User.find({})
+  if (userdoc) {
+    let users = {}
+    userdoc.forEach(v => {
+      users[v._id] = {name: v.user, avatar: v.avatar}
+    })
+    const chat = await Chat.find({'$or': [{from: user}, {to: user}]})
+    if (chat) {
+      ctx.body = {
+        code: 0,
+        msgs: chat,
+        users
+      }
+    } else {
+      ctx.body = {
+        code: 1
+      }
     }
   }
 })
