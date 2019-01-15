@@ -6,6 +6,6 @@
 目前项目还有部分小bug需要修复，正在努力。
 
 项目启动
-### `npm start`（前端）
-### `node server/server.js`（后端，数据库请自行连接）
+`npm start`（前端）
+`node server/server.js`（后端，数据库请自行连接）
 
